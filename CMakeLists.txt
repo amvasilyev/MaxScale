@@ -250,6 +250,7 @@ if(PACKAGE)
   # Install the files copied by the postinst script into the share folder
   install_program(${CMAKE_BINARY_DIR}/maxscale core)
   install_file(${CMAKE_BINARY_DIR}/maxscale.conf core)
+  install_file(${CMAKE_SOURCE_DIR}/etc/logrotate.d/maxscale_logrotate core)
   install_program(${CMAKE_BINARY_DIR}/postinst core)
   install_program(${CMAKE_BINARY_DIR}/postrm core)
 
