@@ -260,17 +260,33 @@ PamClientSession* PamClientSession::create(const PamInstance& inst)
 {
     // This handle is only used from one thread, can define no_mutex.
     sqlite3* dbhandle = NULL;
-    int db_flags = SQLITE_OPEN_URI | SQLITE_OPEN_READONLY | SQLITE_OPEN_SHAREDCACHE | SQLITE_OPEN_NOMUTEX;
+    bool error = false;
+    int db_flags = SQLITE_OPEN_READONLY | SQLITE_OPEN_SHAREDCACHE | SQLITE_OPEN_NOMUTEX;
     if (sqlite3_open_v2(inst.m_dbname.c_str(), &dbhandle, db_flags, NULL) == SQLITE_OK)
     {
         sqlite3_busy_timeout(dbhandle, 1000);
     }
     else
     {
-        MXS_ERROR("Failed to open SQLite3 handle.");
+        if (dbhandle)
+        {
+            MXB_ERROR(SQLITE_OPEN_FAIL, sqlite3_errmsg(dbhandle));
+        }
+        else
+        {
+            // This means memory allocation failed.
+            MXB_ERROR(SQLITE_OPEN_OOM, inst.m_dbname.c_str());
+        }
+        error = true;
     }
+
     PamClientSession* rval = NULL;
-    if (!dbhandle || (rval = new(std::nothrow) PamClientSession(dbhandle, inst)) == NULL)
+    if (!error && ((rval = new(std::nothrow) PamClientSession(dbhandle, inst)) == NULL))
+    {
+        error = true;
+    }
+
+    if (error)
     {
         sqlite3_close_v2(dbhandle);
     }
