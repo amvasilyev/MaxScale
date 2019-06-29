@@ -16,6 +16,10 @@ then
   install_libdir=/usr/lib
   export DEBIAN_FRONTEND=noninteractive
   sudo apt-get update
+  sudo -E apt-get -q -o Dpkg::Options::=--force-confold \
+       -o Dpkg::Options::=--force-confdef \
+       -y --force-yes \
+       upgrade
 
   sudo dpkg-reconfigure libc6
   sudo -E apt-get -q -o Dpkg::Options::=--force-confold \
@@ -197,7 +201,7 @@ export GIT_CURL_VERBOSE=2
 
 COUNTER=0
 CLONED=0
-while [  $COUNTER -lt 5 ]; do
+while [  $COUNTER -lt 1 ]; do
     git clone https://github.com/akheron/jansson.git
     if [ $? == 0 ]
     then
