@@ -194,15 +194,10 @@ cd ../../..
 show_dns_status
 
 # Jansson
-wget https://github.com/akheron/jansson.git
-
-export GIT_TRACE=2
-export GIT_CURL_VERBOSE=2
-
 COUNTER=0
 CLONED=0
 while [  $COUNTER -lt 1 ]; do
-    git clone https://github.com/akheron/jansson.git
+    GIT_TRACE=1 GIT_CURL_VERBOSE=2 git clone https://github.com/akheron/jansson.git
     if [ $? == 0 ]
     then
         let CLONED=1
@@ -211,7 +206,7 @@ while [  $COUNTER -lt 1 ]; do
     let COUNTER=COUNTER+1
 done
 
-if [ $CLONED == 0];
+if [ $CLONED == 0 ];
 then
     echo "Error cloning jansson"
     sudo rm -rf $tmpdir
