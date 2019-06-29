@@ -190,6 +190,11 @@ cd ../../..
 show_dns_status
 
 # Jansson
+wget https://github.com/akheron/jansson.git
+
+export GIT_TRACE=2
+export GIT_CURL_VERBOSE=2
+
 git clone https://github.com/akheron/jansson.git
 if [ $? != 0 ]
 then
