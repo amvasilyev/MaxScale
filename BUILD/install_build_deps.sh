@@ -117,6 +117,30 @@ else
   fi
 fi
 
+function robust_git_clone() {
+    repository=$1
+    repo_name=$2
+
+    counter=0
+    cloned=0
+    while [  $counter -lt 1 ]; do
+        GIT_TRACE=1 GIT_CURL_VERBOSE=2 git clone $repository
+        if [ $? == 0 ]
+        then
+            let cloned=1
+            break
+        fi
+        let counter=counter+1
+    done
+
+    if [ $cloned == 0 ];
+    then
+        echo Error cloning ${repo_name}
+        sudo rm -rf $tmpdir
+        exit 1
+    fi
+}
+
 function show_dns_status() {
     echo "resolv.conf file status"
     ls -l /etc/resolv.conf
@@ -194,27 +218,16 @@ cd ../../..
 show_dns_status
 
 # Jansson
-COUNTER=0
-CLONED=0
-while [  $COUNTER -lt 1 ]; do
-    GIT_TRACE=1 GIT_CURL_VERBOSE=2 git clone https://github.com/akheron/jansson.git
-    if [ $? == 0 ]
-    then
-        let CLONED=1
-        break
-    fi
-    let COUNTER=COUNTER+1
-done
-
-if [ $CLONED == 0 ];
+wget -q --no-check-certificate http://www.digip.org/jansson/releases/jansson-2.9.tar.bz2
+if [ $? != 0 ]
 then
-    echo "Error cloning jansson"
+    echo "Error getting jasson"
     sudo rm -rf $tmpdir
     exit 1
 fi
 
-cd jansson
-git checkout v2.9
+tar xjf jasson-2.9.tar.bz2
+cd jasson-2.9
 mkdir build
 cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_C_FLAGS=-fPIC -DJANSSON_INSTALL_LIB_DIR=$install_libdir
