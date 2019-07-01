@@ -154,7 +154,7 @@ function show_dns_status() {
 # TCL
 mkdir tcl
 cd tcl
-wget -q --no-check-certificate http://prdownloads.sourceforge.net/tcl/tcl8.6.5-src.tar.gz
+wget -q --no-check-certificate http://prdownloads.sourceforge.net/tcl/tcl8.6.9-src.tar.gz
 
 if [ $? != 0 ]
 then
@@ -163,8 +163,8 @@ then
     exit 1
 fi
 
-tar xzf tcl8.6.5-src.tar.gz
-cd tcl8.6.5/unix
+tar xzf tcl8.6.9-src.tar.gz
+cd tcl8.6.9/unix
 ./configure
 sudo make install
 cd ../../..
