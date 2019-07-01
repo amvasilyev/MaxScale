@@ -172,6 +172,44 @@ if [ "`echo -e "3.7.1\n$cmake_version"|sort -V|head -n 1`" != "3.7.1" ] ; then
     cd ..
 fi
 
+# Jansson
+wget --no-check-certificate http://www.digip.org/jansson/releases/jansson-2.9.tar.bz2
+if [ $? != 0 ]
+then
+    echo "Error getting jasson"
+    sudo rm -rf $tmpdir
+    exit 1
+fi
+
+tar xjf jansson-2.9.tar.bz2
+cd jansson-2.9
+mkdir build
+cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_C_FLAGS=-fPIC -DJANSSON_INSTALL_LIB_DIR=$install_libdir
+make
+sudo make install
+cd ../../
+
+# Avro C API
+wget -q -r -l1 -nH --cut-dirs=2 --no-parent -A.tar.gz --no-directories http://mirror.netinch.com/pub/apache/avro/stable/c
+if [ $? != 0 ]
+then
+    echo "Error getting avro-c"
+    sudo rm -rf $tmpdir
+    exit 1
+fi
+avro_filename=`ls -1 avro*.tar.gz`
+avro_dir=`echo "$avro_filename" | sed "s/.tar.gz//"`
+tar -axf $avro_filename
+mkdir $avro_dir/build
+pushd $avro_dir/build
+# Make sure the library isn't linked against snappy
+sed -i 's/find_package(Snappy)//' ../lang/c/CMakeLists.txt
+cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_C_FLAGS=-fPIC -DCMAKE_CXX_FLAGS=-fPIC
+make
+sudo make install
+popd
+
 # RabbitMQ C client
 mkdir rabbit
 cd rabbit
@@ -207,48 +245,6 @@ cd tcl8.6.5/unix
 ./configure
 sudo make install
 cd ../../..
-
-# Jansson
-wget --no-check-certificate http://www.digip.org/jansson/releases/jansson-2.9.tar.bz2
-if [ $? != 0 ]
-then
-    echo "Error getting jasson"
-    sudo rm -rf $tmpdir
-    exit 1
-fi
-
-tar xjf jansson-2.9.tar.bz2
-cd jansson-2.9
-mkdir build
-cd build
-cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_C_FLAGS=-fPIC -DJANSSON_INSTALL_LIB_DIR=$install_libdir
-make
-sudo make install
-cd ../../
-
-show_dns_status
-
-# Avro C API
-wget -q -r -l1 -nH --cut-dirs=2 --no-parent -A.tar.gz --no-directories http://mirror.netinch.com/pub/apache/avro/stable/c
-if [ $? != 0 ]
-then
-    echo "Error getting avro-c"
-    sudo rm -rf $tmpdir
-    exit 1
-fi
-avro_filename=`ls -1 avro*.tar.gz`
-avro_dir=`echo "$avro_filename" | sed "s/.tar.gz//"`
-tar -axf $avro_filename
-mkdir $avro_dir/build
-pushd $avro_dir/build
-# Make sure the library isn't linked against snappy
-sed -i 's/find_package(Snappy)//' ../lang/c/CMakeLists.txt
-cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_C_FLAGS=-fPIC -DCMAKE_CXX_FLAGS=-fPIC
-make
-sudo make install
-popd
-
-show_dns_status
 
 wget --quiet https://nodejs.org/dist/v6.11.2/node-v6.11.2-linux-x64.tar.xz
 tar -axf node-v6.11.2-linux-x64.tar.xz
