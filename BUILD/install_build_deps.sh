@@ -15,7 +15,6 @@ then
   # DEB-based distro
   install_libdir=/usr/lib
   export DEBIAN_FRONTEND=noninteractive
-  sudo apt-get update
   sudo -E apt-get -q -o Dpkg::Options::=--force-confold \
        -o Dpkg::Options::=--force-confdef \
        -y --force-yes \
@@ -152,8 +151,6 @@ function show_dns_status() {
     nslookup github.com
 }
 
-show_dns_status
-
 # cmake
 wget -q http://max-tst-01.mariadb.com/ci-repository/cmake-3.7.1-Linux-x86_64.tar.gz --no-check-certificate
 if [ $? != 0 ] ; then
@@ -175,8 +172,6 @@ if [ "`echo -e "3.7.1\n$cmake_version"|sort -V|head -n 1`" != "3.7.1" ] ; then
     cd ..
 fi
 
-show_dns_status
-
 # RabbitMQ C client
 mkdir rabbit
 cd rabbit
@@ -194,8 +189,6 @@ git checkout v0.7.1
 cmake .  -DCMAKE_C_FLAGS=-fPIC -DBUILD_SHARED_LIBS=N  -DCMAKE_INSTALL_PREFIX=/usr
 sudo make install
 cd ../../
-
-show_dns_status
 
 # TCL
 mkdir tcl
@@ -215,10 +208,8 @@ cd tcl8.6.5/unix
 sudo make install
 cd ../../..
 
-show_dns_status
-
 # Jansson
-wget -q --no-check-certificate http://www.digip.org/jansson/releases/jansson-2.9.tar.bz2
+wget --no-check-certificate http://www.digip.org/jansson/releases/jansson-2.9.tar.bz2
 if [ $? != 0 ]
 then
     echo "Error getting jasson"
