@@ -217,7 +217,7 @@ then
     exit 1
 fi
 
-tar xjf jasson-2.9.tar.bz2
+tar xjf jansson-2.9.tar.bz2
 cd jasson-2.9
 mkdir build
 cd build
