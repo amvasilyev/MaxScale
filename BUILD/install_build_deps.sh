@@ -151,6 +151,24 @@ function show_dns_status() {
     nslookup github.com
 }
 
+# TCL
+mkdir tcl
+cd tcl
+wget -q --no-check-certificate http://prdownloads.sourceforge.net/tcl/tcl8.6.5-src.tar.gz
+
+if [ $? != 0 ]
+then
+    echo "Error getting tcl"
+    sudo rm -rf $tmpdir
+    exit 1
+fi
+
+tar xzf tcl8.6.5-src.tar.gz
+cd tcl8.6.5/unix
+./configure
+sudo make install
+cd ../../..
+
 # cmake
 wget -q http://max-tst-01.mariadb.com/ci-repository/cmake-3.7.1-Linux-x86_64.tar.gz --no-check-certificate
 if [ $? != 0 ] ; then
@@ -228,23 +246,6 @@ cmake .  -DCMAKE_C_FLAGS=-fPIC -DBUILD_SHARED_LIBS=N  -DCMAKE_INSTALL_PREFIX=/us
 sudo make install
 cd ../../
 
-# TCL
-mkdir tcl
-cd tcl
-wget -q --no-check-certificate http://prdownloads.sourceforge.net/tcl/tcl8.6.5-src.tar.gz
-
-if [ $? != 0 ]
-then
-    echo "Error getting tcl"
-    sudo rm -rf $tmpdir
-    exit 1
-fi
-
-tar xzf tcl8.6.5-src.tar.gz
-cd tcl8.6.5/unix
-./configure
-sudo make install
-cd ../../..
 
 wget --quiet https://nodejs.org/dist/v6.11.2/node-v6.11.2-linux-x64.tar.xz
 tar -axf node-v6.11.2-linux-x64.tar.xz
