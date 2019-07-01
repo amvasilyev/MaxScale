@@ -218,7 +218,7 @@ then
 fi
 
 tar xjf jansson-2.9.tar.bz2
-cd jasson-2.9
+cd jansson-2.9
 mkdir build
 cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_C_FLAGS=-fPIC -DJANSSON_INSTALL_LIB_DIR=$install_libdir
