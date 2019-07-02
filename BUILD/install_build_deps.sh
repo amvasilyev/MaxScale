@@ -153,23 +153,26 @@ sudo make install
 cd ../../
 
 # TCL
-mkdir tcl
-cd tcl
-wget -q --no-check-certificate http://prdownloads.sourceforge.net/tcl/tcl8.6.5-src.tar.gz
-
-if [ $? != 0 ]
+tcl_version=$(tclsh <<< 'puts [info patchlevel]')
+if [[ "$tcl_version" < "8.6.5" ]]
 then
-    echo "Error getting tcl"
-    sudo rm -rf $tmpdir
-    exit 1
+    mkdir tcl
+    cd tcl
+    wget -q --no-check-certificate http://prdownloads.sourceforge.net/tcl/tcl8.6.5-src.tar.gz
+
+    if [ $? != 0 ]
+    then
+        echo "Error getting tcl"
+        sudo rm -rf $tmpdir
+        exit 1
+    fi
+
+    tar xzf tcl8.6.5-src.tar.gz
+    cd tcl8.6.5/unix
+    ./configure
+    sudo make install
+    cd ../../..
 fi
-
-tar xzf tcl8.6.5-src.tar.gz
-cd tcl8.6.5/unix
-./configure
-sudo make install
-cd ../../..
-
 
 # Jansson
 git clone https://github.com/akheron/jansson.git
